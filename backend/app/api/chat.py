@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from app.services.ollama_service import chat_with_ollama, check_ollama_status
+from app.database.db_errors import save_response_errors
 
 router = APIRouter()
 
@@ -39,4 +40,5 @@ async def chat(request: ChatRequest):
     messages = [{"role": m.role, "content": m.content} for m in request.messages]
 
     response = await chat_with_ollama(messages)
+    await save_response_errors(response)
     return ChatResponse(response=response)

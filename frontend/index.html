@@ -1,755 +1,1800 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>English Tutor</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --bg:        #0f1117;
-    --surface:   #181c27;
-    --border:    #252a38;
-    --accent:    #4ade9a;
-    --accent-dim:#1e4a35;
-    --text:      #e8eaf0;
-    --text-muted:#6b7280;
-    --user-bg:   #1e2435;
-    --tutor-bg:  #13192a;
-    --error-clr: #f87171;
-    --warn-bg:   #1c1a10;
-    --warn-clr:  #fbbf24;
-    --radius:    12px;
-    --font:      'Inter', system-ui, sans-serif;
+:root {
+  --bg: #0f1117;
+  --surface: #181c27;
+  --surface-2: #1c2130;
+  --border: #252a38;
+
+  --accent: #4ade9a;
+  --accent-dim: #1e4a35;
+
+  --text: #e8eaf0;
+  --text-muted: #6b7280;
+
+  --user-bg: #1e2435;
+  --tutor-bg: #13192a;
+
+  --error-clr: #f87171;
+
+  --warn-bg: #1c1a10;
+  --warn-clr: #fbbf24;
+
+  --radius: 12px;
+  --font: 'Inter', system-ui, sans-serif;
+}
+
+/* ─────────────────────────────────────────
+   RESET
+───────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  background: var(--bg);
+  color: var(--text);
+
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.6;
+
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─────────────────────────────────────────
+   APP
+───────────────────────────────────────── */
+
+.app {
+  width: 100%;
+  height: 100dvh;
+
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────
+   SIDEBAR
+───────────────────────────────────────── */
+
+.sidebar {
+  height: 100dvh;
+
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 24px 16px;
+  gap: 8px;
+
+  overflow: hidden;
+}
+
+.logo {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  text-transform: uppercase;
+
+  padding: 0 8px 20px;
+
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 9px 10px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  color: var(--text-muted);
+
+  font-size: 14px;
+  font-weight: 400;
+
+  transition:
+    background 0.15s,
+    color 0.15s;
+
+  border: none;
+  background: none;
+
+  width: 100%;
+
+  text-align: left;
+}
+
+.nav-item:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.nav-item.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.nav-icon {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+
+  padding-top: 16px;
+
+  border-top: 1px solid var(--border);
+}
+
+.level-badge {
+  background: var(--accent-dim);
+  color: var(--accent);
+
+  font-size: 12px;
+  font-weight: 600;
+
+  padding: 6px 10px;
+
+  border-radius: 6px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-bar-wrap {
+  margin-top: 8px;
+
+  height: 3px;
+
+  background: var(--border);
+
+  border-radius: 99px;
+
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 18%;
+
+  background: var(--accent);
+
+  border-radius: 99px;
+
+  transition: width 0.6s ease;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+
+  font-size: 11px;
+
+  color: var(--text-muted);
+
+  margin-top: 5px;
+}
+
+/* ─────────────────────────────────────────
+   MAIN
+───────────────────────────────────────── */
+
+.main {
+  min-width: 0;
+  min-height: 0;
+
+  height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────
+   TOPBAR
+───────────────────────────────────────── */
+
+.topbar {
+  height: 56px;
+  min-height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 24px;
+
+  border-bottom: 1px solid var(--border);
+
+  flex-shrink: 0;
+}
+
+.topbar-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: var(--accent);
+
+  display: inline-block;
+
+  margin-right: 6px;
+
+  box-shadow: 0 0 6px var(--accent);
+}
+
+.status-dot.off {
+  background: var(--error-clr);
+  box-shadow: 0 0 6px var(--error-clr);
+}
+
+.status-dot.checking {
+  background: var(--warn-clr);
+  box-shadow: 0 0 6px var(--warn-clr);
+}
+
+.status-text {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-icon {
+  background: none;
+
+  border: 1px solid var(--border);
+
+  color: var(--text-muted);
+
+  border-radius: 7px;
+
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  font-size: 15px;
+
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background 0.15s;
+}
+
+.btn-icon:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-icon.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+/* ─────────────────────────────────────────
+   ALERT
+───────────────────────────────────────── */
+
+.alert {
+  display: none;
+
+  margin: 12px 24px 0;
+
+  padding: 10px 14px;
+
+  border-radius: 8px;
+
+  font-size: 13px;
+
+  background: #2a1010;
+  border: 1px solid #5a2020;
+
+  color: var(--error-clr);
+
+  flex-shrink: 0;
+}
+
+.alert.visible {
+  display: block;
+}
+
+/* ─────────────────────────────────────────
+   PAGES
+───────────────────────────────────────── */
+
+.page {
+  display: none;
+
+  flex: 1;
+
+  min-height: 0;
+
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.page.active {
+  display: flex;
+}
+
+/* ─────────────────────────────────────────
+   CONVERSATION
+───────────────────────────────────────── */
+
+#page-conversation {
+  min-height: 0;
+}
+
+/* Messages are the ONLY scrolling area */
+
+.messages {
+  flex: 1;
+
+  min-height: 0;
+
+  width: 100%;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding: 28px clamp(16px, 5vw, 64px);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 18px;
+
+  scroll-behavior: smooth;
+
+  overscroll-behavior: contain;
+}
+
+.messages::-webkit-scrollbar {
+  width: 5px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+}
+
+.msg {
+  width: min(680px, 100%);
+
+  display: flex;
+  flex-direction: column;
+
+  animation: msgIn 0.2s ease;
+}
+
+@keyframes msgIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
   }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-  html, body {
-    height: 100%;
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font);
-    font-size: 15px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
+.msg.user {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.msg.tutor {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+.msg-label {
+  font-size: 11px;
+
+  color: var(--text-muted);
+
+  margin-bottom: 5px;
+
+  font-weight: 500;
+
+  letter-spacing: 0.03em;
+}
+
+.msg-bubble {
+  max-width: 100%;
+
+  padding: 12px 16px;
+
+  border-radius: var(--radius);
+
+  font-size: 14.5px;
+
+  line-height: 1.65;
+
+  white-space: pre-wrap;
+
+  overflow-wrap: anywhere;
+}
+
+.msg.user .msg-bubble {
+  background: var(--user-bg);
+
+  border: 1px solid var(--border);
+
+  border-bottom-right-radius: 4px;
+
+  color: var(--text);
+}
+
+.msg.tutor .msg-bubble {
+  background: var(--tutor-bg);
+
+  border: 1px solid var(--border);
+
+  border-bottom-left-radius: 4px;
+
+  color: var(--text);
+}
+
+.msg-bubble .correction {
+  display: block;
+
+  background: var(--warn-bg);
+
+  border-left: 2px solid var(--warn-clr);
+
+  padding: 8px 12px;
+
+  border-radius: 0 6px 6px 0;
+
+  margin: 8px 0;
+
+  font-size: 13.5px;
+
+  color: var(--warn-clr);
+}
+
+.msg-time {
+  font-size: 10px;
+
+  color: var(--text-muted);
+
+  margin-top: 4px;
+
+  padding: 0 2px;
+}
+
+/* ─────────────────────────────────────────
+   EMPTY STATE
+───────────────────────────────────────── */
+
+.empty-state {
+  flex: 1;
+
+  min-height: 300px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+
+  color: var(--text-muted);
+
+  text-align: center;
+
+  padding: 40px 20px;
+}
+
+.empty-icon {
+  font-size: 40px;
+  opacity: 0.4;
+}
+
+.empty-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.empty-sub {
+  font-size: 13px;
+
+  max-width: 320px;
+}
+
+/* ─────────────────────────────────────────
+   TYPING INDICATOR
+───────────────────────────────────────── */
+
+.typing-indicator {
+  display: none;
+
+  align-self: flex-start;
+
+  padding: 12px 16px;
+
+  background: var(--tutor-bg);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
+  border-bottom-left-radius: 4px;
+
+  gap: 5px;
+
+  align-items: center;
+
+  flex-shrink: 0;
+}
+
+.typing-indicator.visible {
+  display: flex;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: var(--text-muted);
+
+  animation: typingBounce 1.2s infinite;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingBounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
   }
 
-  /* ── Layout ── */
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* ─────────────────────────────────────────
+   INPUT
+───────────────────────────────────────── */
+
+.input-area {
+  width: 100%;
+
+  padding:
+    12px
+    clamp(12px, 5vw, 64px)
+    max(16px, env(safe-area-inset-bottom));
+
+  border-top: 1px solid var(--border);
+
+  background: var(--bg);
+
+  flex-shrink: 0;
+
+  position: relative;
+  z-index: 5;
+}
+
+.input-row {
+  width: 100%;
+  max-width: 900px;
+
+  margin: 0 auto;
+
+  display: flex;
+
+  gap: 8px;
+
+  align-items: flex-end;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: 14px;
+
+  padding: 9px 10px 9px 14px;
+
+  transition: border-color 0.2s;
+
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+}
+
+.input-row:focus-within {
+  border-color: var(--accent);
+}
+
+#textInput {
+  flex: 1;
+
+  min-width: 0;
+
+  background: none;
+
+  border: none;
+
+  outline: none;
+
+  color: var(--text);
+
+  font-family: var(--font);
+
+  font-size: 14.5px;
+
+  line-height: 1.5;
+
+  resize: none;
+
+  max-height: 120px;
+
+  min-height: 22px;
+
+  overflow-y: auto;
+}
+
+#textInput::placeholder {
+  color: var(--text-muted);
+}
+
+.input-actions {
+  display: flex;
+
+  gap: 6px;
+
+  align-items: center;
+
+  flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────
+   MIC
+───────────────────────────────────────── */
+
+.btn-mic {
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+
+  border: none;
+
+  background: var(--border);
+
+  color: var(--text-muted);
+
+  font-size: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s,
+    color 0.2s,
+    box-shadow 0.2s;
+
+  flex-shrink: 0;
+}
+
+.btn-mic:hover {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.btn-mic.recording {
+  background: #3d1111;
+
+  color: var(--error-clr);
+
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.25);
+
+  animation: micPulse 1s infinite;
+}
+
+@keyframes micPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px rgba(248, 113, 113, 0.08);
+  }
+}
+
+/* ─────────────────────────────────────────
+   SEND
+───────────────────────────────────────── */
+
+.btn-send {
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+
+  border: none;
+
+  background: var(--accent);
+
+  color: #0a1a12;
+
+  font-size: 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  transition:
+    opacity 0.15s,
+    transform 0.1s;
+
+  flex-shrink: 0;
+
+  font-weight: 600;
+}
+
+.btn-send:hover {
+  opacity: 0.85;
+}
+
+.btn-send:active {
+  transform: scale(0.94);
+}
+
+.btn-send:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ─────────────────────────────────────────
+   TRANSCRIPTION
+───────────────────────────────────────── */
+
+.transcript-preview {
+  width: 100%;
+  max-width: 900px;
+
+  margin: 0 auto 5px;
+
+  font-size: 12px;
+
+  color: var(--text-muted);
+
+  padding: 0 4px;
+
+  min-height: 16px;
+
+  transition: opacity 0.2s;
+}
+
+.transcript-preview.listening {
+  color: var(--error-clr);
+}
+
+/* ─────────────────────────────────────────
+   OTHER PAGES
+───────────────────────────────────────── */
+
+.page-inner {
+  flex: 1;
+
+  min-height: 0;
+
+  overflow-y: auto;
+
+  padding: 28px clamp(20px, 5vw, 64px);
+}
+
+.page-heading {
+  font-size: 20px;
+  font-weight: 600;
+
+  margin-bottom: 6px;
+}
+
+.page-sub {
+  font-size: 13px;
+
+  color: var(--text-muted);
+
+  margin-bottom: 28px;
+}
+
+.error-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 10px;
+
+  max-width: 900px;
+}
+
+.error-card {
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
+  padding: 14px 18px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 16px;
+}
+
+.error-freq {
+  font-size: 22px;
+
+  font-weight: 600;
+
+  color: var(--accent);
+
+  min-width: 36px;
+
+  text-align: center;
+}
+
+.error-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.error-wrong {
+  font-size: 13.5px;
+  color: var(--error-clr);
+}
+
+.error-arrow {
+  color: var(--text-muted);
+  margin: 0 6px;
+}
+
+.error-right {
+  font-size: 13.5px;
+  color: var(--accent);
+}
+
+.error-cat {
+  font-size: 11px;
+
+  color: var(--text-muted);
+
+  margin-top: 3px;
+
+  text-transform: capitalize;
+}
+
+.empty-errors {
+  text-align: center;
+
+  padding: 60px 20px;
+
+  color: var(--text-muted);
+
+  font-size: 14px;
+}
+
+.error-summary-card {
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.12), rgba(168, 85, 247, 0.08));
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
+  padding: 18px 20px;
+
+  margin-bottom: 14px;
+}
+
+.error-summary-title {
+  font-size: 12px;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.08em;
+
+  color: var(--text-muted);
+
+  margin-bottom: 8px;
+}
+
+.error-summary-text {
+  color: var(--text);
+
+  line-height: 1.6;
+
+  font-size: 14px;
+}
+
+/* ─────────────────────────────────────────
+   PROGRESS
+───────────────────────────────────────── */
+
+.stats-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 14px;
+
+  margin-bottom: 28px;
+
+  max-width: 900px;
+}
+
+.stat-card {
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius);
+
+  padding: 20px;
+}
+
+.stat-value {
+  font-size: 32px;
+
+  font-weight: 600;
+
+  color: var(--accent);
+
+  line-height: 1;
+
+  margin-bottom: 6px;
+}
+
+.stat-label {
+  font-size: 12px;
+
+  color: var(--text-muted);
+}
+
+/* ─────────────────────────────────────────
+   SETTINGS
+───────────────────────────────────────── */
+
+.settings-section {
+  margin-bottom: 28px;
+
+  max-width: 900px;
+}
+
+.settings-heading {
+  font-size: 12px;
+
+  font-weight: 600;
+
+  color: var(--text-muted);
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.07em;
+
+  margin-bottom: 12px;
+}
+
+.setting-row {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 12px 0;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.setting-label {
+  font-size: 14px;
+}
+
+.setting-desc {
+  font-size: 12px;
+
+  color: var(--text-muted);
+
+  margin-top: 2px;
+}
+
+/* Toggle */
+
+.toggle {
+  position: relative;
+
+  width: 40px;
+  height: 22px;
+
+  cursor: pointer;
+
+  flex-shrink: 0;
+}
+
+.toggle input {
+  display: none;
+}
+
+.toggle-track {
+  width: 100%;
+  height: 100%;
+
+  background: var(--border);
+
+  border-radius: 99px;
+
+  transition: background 0.2s;
+}
+
+.toggle input:checked + .toggle-track {
+  background: var(--accent);
+}
+
+.toggle-thumb {
+  position: absolute;
+
+  top: 3px;
+  left: 3px;
+
+  width: 16px;
+  height: 16px;
+
+  background: #fff;
+
+  border-radius: 50%;
+
+  transition: left 0.2s;
+}
+
+.toggle input:checked ~ .toggle-thumb {
+  left: 21px;
+}
+
+/* ─────────────────────────────────────────
+   TABLET
+───────────────────────────────────────── */
+
+@media (max-width: 900px) {
+
   .app {
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    grid-template-rows: 100vh;
-    height: 100vh;
+    grid-template-columns: 190px minmax(0, 1fr);
   }
 
-  /* ── Sidebar ── */
-  .sidebar {
-    background: var(--surface);
-    border-right: 1px solid var(--border);
+  .messages {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .input-area {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+}
+
+/* ─────────────────────────────────────────
+   MOBILE
+───────────────────────────────────────── */
+
+@media (max-width: 640px) {
+
+  html,
+  body {
+    height: 100%;
+    height: 100dvh;
+  }
+
+  .app {
     display: flex;
+
     flex-direction: column;
-    padding: 24px 16px;
-    gap: 8px;
+
+    height: 100dvh;
+
+    overflow: hidden;
   }
 
-  .logo {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    color: var(--accent);
-    text-transform: uppercase;
-    padding: 0 8px 20px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 8px;
+  /* Hide desktop sidebar */
+
+  .sidebar {
+    order: 2;
+
+    width: 100%;
+    height: 58px;
+
+    min-height: 58px;
+
+    padding: 5px 8px;
+
+    border-right: none;
+
+    border-top: 1px solid var(--border);
+
+    flex-direction: row;
+
+    gap: 4px;
+
+    overflow: hidden;
+  }
+
+  .logo,
+  .sidebar-footer {
+    display: none;
   }
 
   .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 9px 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    color: var(--text-muted);
-    font-size: 14px;
-    font-weight: 400;
-    transition: background 0.15s, color 0.15s;
-    border: none;
-    background: none;
-    width: 100%;
-    text-align: left;
-  }
-  .nav-item:hover { background: var(--border); color: var(--text); }
-  .nav-item.active { background: var(--accent-dim); color: var(--accent); font-weight: 500; }
-  .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+    flex: 1;
 
-  .sidebar-footer {
-    margin-top: auto;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-  }
+    width: auto;
 
-  .level-badge {
-    background: var(--accent-dim);
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 600;
-    padding: 6px 10px;
-    border-radius: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+    height: 46px;
 
-  .progress-bar-wrap {
-    margin-top: 8px;
-    height: 3px;
-    background: var(--border);
-    border-radius: 99px;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    width: 18%;
-    background: var(--accent);
-    border-radius: 99px;
-    transition: width 0.6s ease;
-  }
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 5px;
-  }
+    padding: 4px;
 
-  /* ── Main area ── */
-  .main {
-    display: flex;
     flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
+
+    justify-content: center;
+
+    gap: 2px;
+
+    text-align: center;
+
+    font-size: 10px;
   }
 
-  /* ── Topbar ── */
+  .nav-icon {
+    width: auto;
+
+    font-size: 17px;
+
+    line-height: 18px;
+  }
+
+  .main {
+    order: 1;
+
+    width: 100%;
+
+    height: calc(100dvh - 58px);
+
+    min-height: 0;
+  }
+
   .topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24px;
-    height: 56px;
-    border-bottom: 1px solid var(--border);
-    flex-shrink: 0;
+    height: 52px;
+    min-height: 52px;
+
+    padding: 0 14px;
   }
 
-  .topbar-title {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text);
+  .topbar-right {
+    gap: 6px;
   }
-
-  .status-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--accent);
-    display: inline-block;
-    margin-right: 6px;
-    box-shadow: 0 0 6px var(--accent);
-  }
-  .status-dot.off { background: var(--error-clr); box-shadow: 0 0 6px var(--error-clr); }
-  .status-dot.checking { background: var(--warn-clr); box-shadow: 0 0 6px var(--warn-clr); }
 
   .status-text {
-    font-size: 12px;
-    color: var(--text-muted);
+    font-size: 11px;
   }
 
-  .topbar-right { display: flex; align-items: center; gap: 12px; }
-
-  .btn-icon {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-    border-radius: 7px;
-    width: 32px; height: 32px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    font-size: 15px;
-    transition: border-color 0.15s, color 0.15s;
-  }
-  .btn-icon:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-icon.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-
-  /* ── Pages ── */
-  .page { display: none; flex-direction: column; height: 100%; }
-  .page.active { display: flex; }
-
-  /* ── Chat messages ── */
   .messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    scroll-behavior: smooth;
-  }
+    padding: 18px 12px;
 
-  .messages::-webkit-scrollbar { width: 4px; }
-  .messages::-webkit-scrollbar-track { background: transparent; }
-  .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+    gap: 14px;
+  }
 
   .msg {
-    display: flex;
-    flex-direction: column;
-    max-width: 680px;
-    animation: msgIn 0.2s ease;
-  }
-  @keyframes msgIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .msg.user { align-self: flex-end; align-items: flex-end; }
-  .msg.tutor { align-self: flex-start; align-items: flex-start; }
-
-  .msg-label {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-bottom: 5px;
-    font-weight: 500;
-    letter-spacing: 0.03em;
+    width: min(88%, 680px);
   }
 
   .msg-bubble {
-    padding: 12px 16px;
-    border-radius: var(--radius);
-    font-size: 14.5px;
-    line-height: 1.65;
-    white-space: pre-wrap;
+    font-size: 14px;
+
+    padding: 10px 13px;
   }
 
-  .msg.user .msg-bubble {
-    background: var(--user-bg);
-    border: 1px solid var(--border);
-    border-bottom-right-radius: 4px;
-    color: var(--text);
-  }
-
-  .msg.tutor .msg-bubble {
-    background: var(--tutor-bg);
-    border: 1px solid var(--border);
-    border-bottom-left-radius: 4px;
-    color: var(--text);
-  }
-
-  /* Correction blocks inside tutor messages */
-  .msg-bubble .correction {
-    display: block;
-    background: var(--warn-bg);
-    border-left: 2px solid var(--warn-clr);
-    padding: 8px 12px;
-    border-radius: 0 6px 6px 0;
-    margin: 8px 0;
-    font-size: 13.5px;
-    color: var(--warn-clr);
-  }
-
-  .msg-time {
-    font-size: 10px;
-    color: var(--text-muted);
-    margin-top: 4px;
-    padding: 0 2px;
-  }
-
-  /* Typing indicator */
-  .typing-indicator {
-    display: none;
-    align-self: flex-start;
-    padding: 12px 16px;
-    background: var(--tutor-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    border-bottom-left-radius: 4px;
-    gap: 5px;
-    align-items: center;
-  }
-  .typing-indicator.visible { display: flex; }
-
-  .typing-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--text-muted);
-    animation: typingBounce 1.2s infinite;
-  }
-  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes typingBounce {
-    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-    30% { transform: translateY(-4px); opacity: 1; }
-  }
-
-  /* Empty state */
-  .empty-state {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    color: var(--text-muted);
-    text-align: center;
-    padding: 40px;
-  }
-  .empty-icon { font-size: 40px; opacity: 0.4; }
-  .empty-title { font-size: 16px; font-weight: 500; color: var(--text); }
-  .empty-sub { font-size: 13px; max-width: 320px; }
-
-  /* ── Input area ── */
   .input-area {
-    padding: 16px 24px 20px;
-    border-top: 1px solid var(--border);
-    flex-shrink: 0;
+    padding:
+      8px
+      10px
+      max(8px, env(safe-area-inset-bottom));
+
+    background: var(--bg);
   }
 
   .input-row {
-    display: flex;
-    gap: 8px;
-    align-items: flex-end;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 10px 12px;
-    transition: border-color 0.2s;
+    padding: 8px 8px 8px 12px;
+
+    border-radius: 13px;
   }
-  .input-row:focus-within { border-color: var(--accent); }
 
   #textInput {
-    flex: 1;
-    background: none;
-    border: none;
-    outline: none;
-    color: var(--text);
-    font-family: var(--font);
-    font-size: 14.5px;
-    line-height: 1.5;
-    resize: none;
-    max-height: 120px;
-    min-height: 22px;
-    overflow-y: auto;
-  }
-  #textInput::placeholder { color: var(--text-muted); }
-
-  .input-actions {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    flex-shrink: 0;
-  }
-
-  /* Mic button */
-  .btn-mic {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    border: none;
-    background: var(--border);
-    color: var(--text-muted);
-    font-size: 16px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-    flex-shrink: 0;
-  }
-  .btn-mic:hover { background: var(--accent-dim); color: var(--accent); }
-  .btn-mic.recording {
-    background: #3d1111;
-    color: var(--error-clr);
-    box-shadow: 0 0 0 3px rgba(248,113,113,0.25);
-    animation: micPulse 1s infinite;
-  }
-  @keyframes micPulse {
-    0%, 100% { box-shadow: 0 0 0 3px rgba(248,113,113,0.2); }
-    50% { box-shadow: 0 0 0 6px rgba(248,113,113,0.08); }
-  }
-
-  /* Send button */
-  .btn-send {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    border: none;
-    background: var(--accent);
-    color: #0a1a12;
-    font-size: 15px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    transition: opacity 0.15s, transform 0.1s;
-    flex-shrink: 0;
-    font-weight: 600;
-  }
-  .btn-send:hover { opacity: 0.85; }
-  .btn-send:active { transform: scale(0.94); }
-  .btn-send:disabled { opacity: 0.3; cursor: not-allowed; }
-
-  /* Transcription preview */
-  .transcript-preview {
-    font-size: 12px;
-    color: var(--text-muted);
-    padding: 0 4px;
-    margin-bottom: 6px;
-    min-height: 16px;
-    transition: opacity 0.2s;
-  }
-  .transcript-preview.listening { color: var(--error-clr); }
-
-  /* ── Mistakes page ── */
-  .page-inner {
-    flex: 1;
-    overflow-y: auto;
-    padding: 28px 32px;
-  }
-
-  .page-heading {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 6px;
-  }
-  .page-sub {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 28px;
-  }
-
-  .error-list { display: flex; flex-direction: column; gap: 10px; }
-
-  .error-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .error-freq {
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--accent);
-    min-width: 36px;
-    text-align: center;
-  }
-
-  .error-info { flex: 1; }
-  .error-wrong { font-size: 13.5px; color: var(--error-clr); }
-  .error-arrow { color: var(--text-muted); margin: 0 6px; }
-  .error-right { font-size: 13.5px; color: var(--accent); }
-  .error-cat {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 3px;
-    text-transform: capitalize;
-  }
-
-  .empty-errors {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text-muted);
     font-size: 14px;
   }
 
-  /* ── Progress page ── */
+  .btn-mic,
+  .btn-send {
+    width: 34px;
+    height: 34px;
+  }
+
+  .transcript-preview {
+    margin-bottom: 3px;
+  }
+
+  .page-inner {
+    padding: 22px 16px;
+  }
+
   .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-    margin-bottom: 28px;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
   }
 
   .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
+    padding: 16px;
   }
+
   .stat-value {
-    font-size: 32px;
-    font-weight: 600;
-    color: var(--accent);
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-  .stat-label {
-    font-size: 12px;
-    color: var(--text-muted);
+    font-size: 27px;
   }
 
-  /* ── Settings page ── */
-  .settings-section {
-    margin-bottom: 28px;
+  .stat-card:last-child {
+    grid-column: 1 / -1;
   }
-  .settings-heading {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin-bottom: 12px;
-  }
-  .setting-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .setting-label { font-size: 14px; }
-  .setting-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-  /* Toggle switch */
-  .toggle {
-    position: relative;
-    width: 40px; height: 22px;
-    cursor: pointer;
-  }
-  .toggle input { display: none; }
-  .toggle-track {
-    width: 100%; height: 100%;
-    background: var(--border);
-    border-radius: 99px;
-    transition: background 0.2s;
-  }
-  .toggle input:checked + .toggle-track { background: var(--accent); }
-  .toggle-thumb {
-    position: absolute;
-    top: 3px; left: 3px;
-    width: 16px; height: 16px;
-    background: #fff;
-    border-radius: 50%;
-    transition: left 0.2s;
-  }
-  .toggle input:checked ~ .toggle-thumb { left: 21px; }
+  .error-card {
+    padding: 12px;
 
-  /* Alert banner */
-  .alert {
-    display: none;
-    margin: 12px 24px 0;
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    background: #2a1010;
-    border: 1px solid #5a2020;
-    color: var(--error-clr);
+    gap: 10px;
   }
-  .alert.visible { display: block; }
 
-  /* Responsive */
-  @media (max-width: 640px) {
-    .app { grid-template-columns: 1fr; }
-    .sidebar { display: none; }
-    .stats-grid { grid-template-columns: 1fr 1fr; }
+  .error-freq {
+    min-width: 28px;
+
+    font-size: 19px;
   }
+
+}
+
+/* ─────────────────────────────────────────
+   VERY SMALL PHONES
+───────────────────────────────────────── */
+
+@media (max-width: 380px) {
+
+  .nav-item {
+    font-size: 9px;
+  }
+
+  .msg {
+    width: 92%;
+  }
+
+  .messages {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .input-area {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+
+  .btn-mic,
+  .btn-send {
+    width: 32px;
+    height: 32px;
+
+    font-size: 14px;
+  }
+}
 </style>
+
 </head>
+
 <body>
 
 <div class="app">
 
-  <!-- ── Sidebar ── -->
+  <!-- ─────────────────────────────
+       SIDEBAR
+  ────────────────────────────── -->
+
   <aside class="sidebar">
-    <div class="logo">English Tutor</div>
 
-    <button class="nav-item active" onclick="showPage('conversation', this)">
-      <span class="nav-icon">💬</span> Conversation
-    </button>
-    <button class="nav-item" onclick="showPage('mistakes', this)">
-      <span class="nav-icon">⚠</span> Mistakes
-    </button>
-    <button class="nav-item" onclick="showPage('progress', this)">
-      <span class="nav-icon">📈</span> Progress
-    </button>
-    <button class="nav-item" onclick="showPage('settings', this)">
-      <span class="nav-icon">⚙</span> Settings
-    </button>
+```
+<div class="logo">
+  English Tutor
+</div>
 
-    <div class="sidebar-footer">
-      <div class="level-badge">
-        <span>A2</span><span style="color:var(--text-muted);font-weight:400">→ B1</span>
-      </div>
-      <div class="progress-bar-wrap">
-        <div class="progress-bar-fill" id="progressFill"></div>
-      </div>
-      <div class="progress-label">
-        <span>A2</span><span>B1</span>
-      </div>
-    </div>
+<button class="nav-item active" onclick="showPage('conversation', this)">
+  <span class="nav-icon">💬</span>
+  <span>Conversation</span>
+</button>
+
+<button class="nav-item" onclick="showPage('mistakes', this)">
+  <span class="nav-icon">⚠</span>
+  <span>Mistakes</span>
+</button>
+
+<button class="nav-item" onclick="showPage('settings', this)">
+  <span class="nav-icon">⚙</span>
+  <span>Settings</span>
+</button>
+
+<div class="sidebar-footer">
+
+  <div class="level-badge">
+    <span>A2</span>
+    <span style="color:var(--text-muted);font-weight:400">
+      → B1
+    </span>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressFill"></div>
+  </div>
+
+  <div class="progress-label">
+    <span>A2</span>
+    <span>B1</span>
+  </div>
+
+</div>
+```
+
   </aside>
 
-  <!-- ── Main ── -->
+  <!-- ─────────────────────────────
+       MAIN
+  ────────────────────────────── -->
+
   <main class="main">
 
-    <!-- Topbar -->
-    <div class="topbar">
-      <div style="display:flex;align-items:center;gap:8px">
-        <span class="status-dot checking" id="statusDot"></span>
-        <span class="status-text" id="statusText">Connecting…</span>
+```
+<!-- Topbar -->
+
+<div class="topbar">
+
+  <div style="display:flex;align-items:center;gap:8px">
+
+    <span
+      class="status-dot checking"
+      id="statusDot"
+    ></span>
+
+    <span
+      class="status-text"
+      id="statusText"
+    >
+      Connecting…
+    </span>
+
+  </div>
+
+  <div class="topbar-right">
+
+    <button
+      class="btn-icon active"
+      id="btnVoice"
+      title="Voice on/off"
+      onclick="toggleVoice()"
+    >
+      🔊
+    </button>
+
+    <button
+      class="btn-icon"
+      title="New session"
+      onclick="newSession()"
+    >
+      ✦
+    </button>
+
+  </div>
+
+</div>
+
+<!-- Alert -->
+
+<div
+  class="alert"
+  id="alertBanner"
+></div>
+
+<!-- ─────────────────────────
+     CONVERSATION
+────────────────────────── -->
+
+<div
+  class="page active"
+  id="page-conversation"
+>
+
+  <div
+    class="messages"
+    id="messages"
+  >
+
+    <div
+      class="empty-state"
+      id="emptyState"
+    >
+
+      <div class="empty-icon">
+        🎓
       </div>
-      <div class="topbar-right">
-        <button class="btn-icon active" id="btnVoice" title="Voice on/off" onclick="toggleVoice()">🔊</button>
-        <button class="btn-icon" title="New session" onclick="newSession()">✦</button>
+
+      <div class="empty-title">
+        Ready to practice
       </div>
+
+      <div class="empty-sub">
+        Type a message or press the mic button to start speaking in English.
+      </div>
+
     </div>
 
-    <!-- Alert banner -->
-    <div class="alert" id="alertBanner"></div>
+    <div
+      class="typing-indicator"
+      id="typingIndicator"
+    >
 
-    <!-- ── Page: Conversation ── -->
-    <div class="page active" id="page-conversation">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
 
-      <div class="messages" id="messages">
-        <div class="empty-state" id="emptyState">
-          <div class="empty-icon">🎓</div>
-          <div class="empty-title">Ready to practice</div>
-          <div class="empty-sub">Type a message or press the mic button to start speaking in English.</div>
-        </div>
-        <div class="typing-indicator" id="typingIndicator">
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-          <div class="typing-dot"></div>
-        </div>
-      </div>
-
-      <div class="input-area">
-        <div class="transcript-preview" id="transcriptPreview"></div>
-        <div class="input-row">
-          <textarea
-            id="textInput"
-            placeholder="Write in English…"
-            rows="1"
-            onkeydown="handleKey(event)"
-            oninput="autoResize(this)"
-          ></textarea>
-          <div class="input-actions">
-            <button class="btn-mic" id="btnMic" title="Hold to speak" onclick="toggleMic()">🎤</button>
-            <button class="btn-send" id="btnSend" onclick="sendMessage()" title="Send">↑</button>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <!-- ── Page: Mistakes ── -->
-    <div class="page" id="page-mistakes">
-      <div class="page-inner">
-        <div class="page-heading">Your mistakes</div>
-        <div class="page-sub">Errors the tutor has detected across your sessions.</div>
-        <div class="error-list" id="errorList">
-          <div class="empty-errors">No errors recorded yet. Start a conversation!</div>
-        </div>
+  </div>
+
+  <!-- INPUT IS NOW FIXED INSIDE THE FLEX LAYOUT -->
+
+  <div class="input-area">
+
+    <div
+      class="transcript-preview"
+      id="transcriptPreview"
+    ></div>
+
+    <div class="input-row">
+
+      <textarea
+        id="textInput"
+        placeholder="Write in English…"
+        rows="1"
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+
+      <div class="input-actions">
+
+        <button
+          class="btn-mic"
+          id="btnMic"
+          title="Hold to speak"
+          onclick="toggleMic()"
+        >
+          🎤
+        </button>
+
+        <button
+          class="btn-send"
+          id="btnSend"
+          onclick="sendMessage()"
+          title="Send"
+        >
+          ↑
+        </button>
+
       </div>
+
     </div>
 
-    <!-- ── Page: Progress ── -->
-    <div class="page" id="page-progress">
-      <div class="page-inner">
-        <div class="page-heading">Your progress</div>
-        <div class="page-sub">Overview of your learning journey.</div>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-value" id="statSessions">—</div>
-            <div class="stat-label">Sessions</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="statMessages">—</div>
-            <div class="stat-label">Messages sent</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-value" id="statErrors">—</div>
-            <div class="stat-label">Error types found</div>
-          </div>
-        </div>
-        <div class="page-sub">Current level</div>
-        <div class="level-badge" style="max-width:200px">
-          <span>A2</span><span style="color:var(--text-muted)">→ B1</span>
-        </div>
-      </div>
+  </div>
+
+</div>
+
+<!-- ─────────────────────────
+     MISTAKES
+────────────────────────── -->
+
+<div
+  class="page"
+  id="page-mistakes"
+>
+
+  <div class="page-inner">
+
+    <div class="page-heading">
+      Your mistakes
     </div>
 
-    <!-- ── Page: Settings ── -->
-    <div class="page" id="page-settings">
-      <div class="page-inner">
-        <div class="page-heading">Settings</div>
-
-        <div class="settings-section">
-          <div class="settings-heading">Voice</div>
-          <div class="setting-row">
-            <div>
-              <div class="setting-label">Text-to-speech</div>
-              <div class="setting-desc">Read tutor responses aloud</div>
-            </div>
-            <label class="toggle">
-              <input type="checkbox" id="settingTTS" checked onchange="state.ttsEnabled = this.checked">
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
-          </div>
-          <div class="setting-row">
-            <div>
-              <div class="setting-label">Speech recognition</div>
-              <div class="setting-desc">Use microphone to speak</div>
-            </div>
-            <label class="toggle">
-              <input type="checkbox" id="settingSTT" checked>
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
-          </div>
-        </div>
-
-        <div class="settings-section">
-          <div class="settings-heading">Backend</div>
-          <div class="setting-row">
-            <div>
-              <div class="setting-label">API URL</div>
-              <div class="setting-desc" id="settingApiUrl">http://localhost:8000</div>
-            </div>
-          </div>
-          <div class="setting-row">
-            <div>
-              <div class="setting-label">Model</div>
-              <div class="setting-desc">qwen3-tutor via Ollama</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="settings-section">
-          <div class="settings-heading">Session</div>
-          <div class="setting-row">
-            <div>
-              <div class="setting-label">Clear conversation</div>
-              <div class="setting-desc">Start a fresh session</div>
-            </div>
-            <button class="btn-icon" onclick="newSession()" style="width:auto;padding:0 12px;font-size:13px">New session</button>
-          </div>
-        </div>
-      </div>
+    <div class="page-sub">
+      Errors the tutor has detected across your sessions.
     </div>
+
+    <div
+      class="error-list"
+      id="errorList"
+    >
+
+      <div class="empty-errors">
+        No errors recorded yet. Start a conversation!
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ─────────────────────────
+     SETTINGS
+────────────────────────── -->
+
+<div
+  class="page"
+  id="page-settings"
+>
+
+  <div class="page-inner">
+
+    <div class="page-heading">
+      Settings
+    </div>
+
+    <div class="settings-section">
+
+      <div class="settings-heading">
+        Voice
+      </div>
+
+      <div class="setting-row">
+
+        <div>
+
+          <div class="setting-label">
+            Text-to-speech
+          </div>
+
+          <div class="setting-desc">
+            Read tutor responses aloud
+          </div>
+
+        </div>
+
+        <label class="toggle">
+
+          <input
+            type="checkbox"
+            id="settingTTS"
+            checked
+            onchange="state.ttsEnabled = this.checked"
+          >
+
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+
+        </label>
+
+      </div>
+
+      <div class="setting-row">
+
+        <div>
+
+          <div class="setting-label">
+            Speech recognition
+          </div>
+
+          <div class="setting-desc">
+            Use microphone to speak
+          </div>
+
+        </div>
+
+        <label class="toggle">
+
+          <input
+            type="checkbox"
+            id="settingSTT"
+            checked
+          >
+
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+
+        </label>
+
+      </div>
+
+    </div>
+
+    <div class="settings-section">
+
+      <div class="settings-heading">
+        Backend
+      </div>
+
+      <div class="setting-row">
+
+        <div>
+
+          <div class="setting-label">
+            API URL
+          </div>
+
+          <div
+            class="setting-desc"
+            id="settingApiUrl"
+          >
+            http://localhost:8000
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="setting-row">
+
+        <div>
+
+          <div class="setting-label">
+            Model
+          </div>
+
+          <div class="setting-desc">
+            qwen3-tutor via Ollama
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="settings-section">
+
+      <div class="settings-heading">
+        Session
+      </div>
+
+      <div class="setting-row">
+
+        <div>
+
+          <div class="setting-label">
+            Clear conversation
+          </div>
+
+          <div class="setting-desc">
+            Start a fresh session
+          </div>
+
+        </div>
+
+        <button
+          class="btn-icon"
+          onclick="newSession()"
+          style="width:auto;padding:0 12px;font-size:13px"
+        >
+          New session
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+```
 
   </main>
+
 </div>
 
 <script>
-// ═══════════════════════════════════════════════
-//  Config
-// ═══════════════════════════════════════════════
+
+/* ═══════════════════════════════════════════════
+   Config
+═══════════════════════════════════════════════ */
+
 const API = 'http://localhost:8000';
 
-// ═══════════════════════════════════════════════
-//  State
-// ═══════════════════════════════════════════════
+
+/* ═══════════════════════════════════════════════
+   State
+═══════════════════════════════════════════════ */
+
 const state = {
   sessionId: null,
-  messages: [],        // [{role, content}]
+  messages: [],
   isTyping: false,
   isRecording: false,
   ttsEnabled: true,
@@ -757,274 +1802,552 @@ const state = {
   currentUtterance: null,
 };
 
-// ═══════════════════════════════════════════════
-//  Boot
-// ═══════════════════════════════════════════════
+
+/* ═══════════════════════════════════════════════
+   Boot
+═══════════════════════════════════════════════ */
+
 window.addEventListener('DOMContentLoaded', async () => {
+
   await checkHealth();
+
   await startSession();
+
   initSpeechRecognition();
+
   setInterval(checkHealth, 15000);
+
 });
 
-// ═══════════════════════════════════════════════
-//  Health check
-// ═══════════════════════════════════════════════
+
+/* ═══════════════════════════════════════════════
+   Health check
+═══════════════════════════════════════════════ */
+
 async function checkHealth() {
-  const dot  = document.getElementById('statusDot');
+
+  const dot = document.getElementById('statusDot');
   const text = document.getElementById('statusText');
+
   try {
-    const res  = await fetch(`${API}/api/health`);
+
+    const res = await fetch(`${API}/api/health`);
+
     const data = await res.json();
+
     if (data.ollama === 'connected') {
-      dot.className  = 'status-dot';
+
+      dot.className = 'status-dot';
+
       text.textContent = 'Tutor online';
+
       hideAlert();
+
     } else {
-      dot.className  = 'status-dot off';
+
+      dot.className = 'status-dot off';
+
       text.textContent = 'Ollama disconnected';
-      showAlert('Ollama is not running. Open a terminal and check that Ollama is active.');
+
+      showAlert(
+        'Ollama is not running. Open a terminal and check that Ollama is active.'
+      );
+
     }
+
   } catch {
-    dot.className  = 'status-dot off';
+
+    dot.className = 'status-dot off';
+
     text.textContent = 'Backend offline';
-    showAlert('Cannot connect to the backend. Make sure uvicorn is running on port 8000.');
+
+    showAlert(
+      'Cannot connect to the backend. Make sure uvicorn is running on port 8000.'
+    );
+
   }
+
 }
 
-// ═══════════════════════════════════════════════
-//  Session
-// ═══════════════════════════════════════════════
+
+/* ═══════════════════════════════════════════════
+   Session
+═══════════════════════════════════════════════ */
+
 async function startSession() {
+
   try {
-    const res  = await fetch(`${API}/api/session?mode=conversation`, { method: 'POST' });
+
+    const res = await fetch(
+      `${API}/api/session?mode=conversation`,
+      {
+        method: 'POST'
+      }
+    );
+
     const data = await res.json();
+
     state.sessionId = data.session_id;
-    state.messages  = [];
+
+    state.messages = [];
+
   } catch {
+
     // Will retry when user sends first message
+
   }
+
 }
+
 
 async function newSession() {
+
   stopTTS();
+
   state.messages = [];
+
   state.sessionId = null;
+
   clearMessages();
+
   await startSession();
+
 }
 
-// ═══════════════════════════════════════════════
-//  Send message
-// ═══════════════════════════════════════════════
+
+/* ═══════════════════════════════════════════════
+   Send message
+═══════════════════════════════════════════════ */
+
 async function sendMessage() {
-  const input   = document.getElementById('textInput');
+
+  const input = document.getElementById('textInput');
+
   const content = input.value.trim();
+
   if (!content || state.isTyping) return;
 
-  // Ensure session exists
-  if (!state.sessionId) await startSession();
+  if (!state.sessionId) {
+    await startSession();
+  }
 
   input.value = '';
+
   autoResize(input);
 
-  // Add user message
-  state.messages.push({ role: 'user', content });
-  appendMessage('user', content);
+  state.messages.push({
+    role: 'user',
+    content
+  });
+
+  appendMessage(
+    'user',
+    content
+  );
+
   showTyping(true);
 
   try {
-    const res = await fetch(`${API}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages: state.messages,
-        session_id: state.sessionId,
-      }),
-    });
+
+    const res = await fetch(
+      `${API}/api/chat`,
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({
+          messages: state.messages,
+          session_id: state.sessionId
+        })
+      }
+    );
 
     if (!res.ok) {
+
       const err = await res.json();
-      throw new Error(err.detail || 'Error from backend');
+
+      throw new Error(
+        err.detail || 'Error from backend'
+      );
+
     }
 
     const data = await res.json();
+
     state.sessionId = data.session_id;
-    state.messages.push({ role: 'assistant', content: data.response });
+
+    state.messages.push({
+      role: 'assistant',
+      content: data.response
+    });
 
     showTyping(false);
-    appendMessage('tutor', data.response);
 
-    if (state.ttsEnabled) speak(data.response);
+    appendMessage(
+      'tutor',
+      data.response
+    );
+
+    if (state.ttsEnabled) {
+      speak(data.response);
+    }
 
   } catch (err) {
+
     showTyping(false);
-    appendMessage('tutor', `[Connection error: ${err.message}]`);
+
+    appendMessage(
+      'tutor',
+      `[Connection error: ${err.message}]`
+    );
+
     showAlert(err.message);
+
   }
+
 }
 
-// ═══════════════════════════════════════════════
-//  DOM helpers
-// ═══════════════════════════════════════════════
+
+/* ═══════════════════════════════════════════════
+   DOM helpers
+═══════════════════════════════════════════════ */
+
 function appendMessage(role, content) {
-  const container = document.getElementById('messages');
-  const empty     = document.getElementById('emptyState');
-  if (empty) empty.remove();
 
-  // Move typing indicator to end
-  const typing = document.getElementById('typingIndicator');
+  const container =
+    document.getElementById('messages');
 
-  const wrap   = document.createElement('div');
-  wrap.className = `msg ${role}`;
+  const empty =
+    document.getElementById('emptyState');
 
-  const label  = document.createElement('div');
-  label.className = 'msg-label';
-  label.textContent = role === 'user' ? 'You' : 'Tutor';
+  if (empty) {
+    empty.remove();
+  }
 
-  const bubble = document.createElement('div');
-  bubble.className = 'msg-bubble';
-  bubble.innerHTML = formatMessage(content);
+  const typing =
+    document.getElementById('typingIndicator');
 
-  const time   = document.createElement('div');
-  time.className = 'msg-time';
-  time.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const wrap =
+    document.createElement('div');
+
+  wrap.className =
+    `msg ${role}`;
+
+  const label =
+    document.createElement('div');
+
+  label.className =
+    'msg-label';
+
+  label.textContent =
+    role === 'user'
+      ? 'You'
+      : 'Tutor';
+
+  const bubble =
+    document.createElement('div');
+
+  bubble.className =
+    'msg-bubble';
+
+  bubble.innerHTML =
+    formatMessage(content);
+
+  const time =
+    document.createElement('div');
+
+  time.className =
+    'msg-time';
+
+  time.textContent =
+    new Date().toLocaleTimeString(
+      [],
+      {
+        hour: '2-digit',
+        minute: '2-digit'
+      }
+    );
 
   wrap.appendChild(label);
   wrap.appendChild(bubble);
   wrap.appendChild(time);
 
-  container.insertBefore(wrap, typing);
-  container.scrollTop = container.scrollHeight;
+  container.insertBefore(
+    wrap,
+    typing
+  );
+
+  requestAnimationFrame(() => {
+
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: 'smooth'
+    });
+
+  });
+
 }
 
+
 function formatMessage(text) {
-  // Escape HTML
+
   let safe = text
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 
-  // Highlight [Error] blocks
   safe = safe.replace(
     /(\[Error\].*?)(\n|$)/g,
     '<span class="correction">$1</span>'
   );
 
-  // Bold **text**
-  safe = safe.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  safe = safe.replace(
+    /\*\*(.*?)\*\*/g,
+    '<strong>$1</strong>'
+  );
 
   return safe;
+
 }
+
 
 function clearMessages() {
-  const container = document.getElementById('messages');
+
+  const container =
+    document.getElementById('messages');
+
   container.innerHTML = `
-    <div class="empty-state" id="emptyState">
-      <div class="empty-icon">🎓</div>
-      <div class="empty-title">Ready to practice</div>
-      <div class="empty-sub">Type a message or press the mic button to start speaking in English.</div>
+
+    <div
+      class="empty-state"
+      id="emptyState"
+    >
+
+      <div class="empty-icon">
+        🎓
+      </div>
+
+      <div class="empty-title">
+        Ready to practice
+      </div>
+
+      <div class="empty-sub">
+        Type a message or press the mic button to start speaking in English.
+      </div>
+
     </div>
-    <div class="typing-indicator" id="typingIndicator">
+
+    <div
+      class="typing-indicator"
+      id="typingIndicator"
+    >
+
       <div class="typing-dot"></div>
       <div class="typing-dot"></div>
       <div class="typing-dot"></div>
-    </div>`;
+
+    </div>
+
+  `;
+
 }
+
 
 function showTyping(visible) {
+
   state.isTyping = visible;
-  const el = document.getElementById('typingIndicator');
-  el.classList.toggle('visible', visible);
-  document.getElementById('btnSend').disabled = visible;
-  const container = document.getElementById('messages');
-  container.scrollTop = container.scrollHeight;
+
+  const el =
+    document.getElementById('typingIndicator');
+
+  el.classList.toggle(
+    'visible',
+    visible
+  );
+
+  document.getElementById(
+    'btnSend'
+  ).disabled = visible;
+
+  const container =
+    document.getElementById('messages');
+
+  requestAnimationFrame(() => {
+
+    container.scrollTop =
+      container.scrollHeight;
+
+  });
+
 }
+
 
 function autoResize(el) {
+
   el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+
+  el.style.height =
+    Math.min(
+      el.scrollHeight,
+      120
+    ) + 'px';
+
 }
+
 
 function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) {
+
+  if (
+    e.key === 'Enter' &&
+    !e.shiftKey
+  ) {
+
     e.preventDefault();
+
     sendMessage();
+
   }
+
 }
 
-// ═══════════════════════════════════════════════
-//  Navigation
-// ═══════════════════════════════════════════════
+
+/* ═══════════════════════════════════════════════
+   Navigation
+═══════════════════════════════════════════════ */
+
 function showPage(name, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  document.getElementById(`page-${name}`).classList.add('active');
-  if (btn) btn.classList.add('active');
 
-  if (name === 'mistakes') loadErrors();
-  if (name === 'progress') loadProgress();
+  document
+    .querySelectorAll('.page')
+    .forEach(p =>
+      p.classList.remove('active')
+    );
+
+  document
+    .querySelectorAll('.nav-item')
+    .forEach(b =>
+      b.classList.remove('active')
+    );
+
+  document
+    .getElementById(`page-${name}`)
+    .classList.add('active');
+
+  if (btn) {
+    btn.classList.add('active');
+  }
+
+  if (name === 'mistakes') {
+    loadErrors();
+  }
+
 }
 
-// ═══════════════════════════════════════════════
-//  Errors page
-// ═══════════════════════════════════════════════
+
+/* ═══════════════════════════════════════════════
+   Errors page
+═══════════════════════════════════════════════ */
+
 async function loadErrors() {
-  const list = document.getElementById('errorList');
+
+  const list =
+    document.getElementById('errorList');
+
   try {
-    const res  = await fetch(`${API}/api/errors`);
-    const data = await res.json();
-    const errors = data.top_errors || [];
 
-    if (errors.length === 0) {
-      list.innerHTML = '<div class="empty-errors">No errors recorded yet. Start a conversation!</div>';
-      return;
-    }
+    const res =
+      await fetch(`${API}/api/errors`);
 
-    list.innerHTML = errors.map(e => `
-      <div class="error-card">
-        <div class="error-freq">${e.frequency}</div>
-        <div class="error-info">
-          <div>
-            <span class="error-wrong">"${e.wrong_form}"</span>
-            <span class="error-arrow">→</span>
-            <span class="error-right">"${e.correct_form}"</span>
-          </div>
-          <div class="error-cat">${e.category}</div>
-          ${e.explanation ? `<div style="font-size:12px;color:var(--text-muted);margin-top:3px">${e.explanation}</div>` : ''}
-        </div>
+    const data =
+      await res.json();
+
+    const errors =
+      data.top_errors || [];
+
+    list.innerHTML = `
+      <div class="error-summary-card">
+        <div class="error-summary-title">AI analysis</div>
+        <div class="error-summary-text">${(data.insights || 'No summary available yet.').replace(/\n/g, '<br>')}</div>
       </div>
-    `).join('');
+      ${errors.length === 0 ? '<div class="empty-errors">No errors recorded yet. Start a conversation!</div>' : ''}
+      ${errors.map(e => `
+
+        <div class="error-card">
+
+          <div class="error-freq">
+            ${e.frequency}
+          </div>
+
+          <div class="error-info">
+
+            <div>
+
+              <span class="error-wrong">
+                "${e.wrong_form}"
+              </span>
+
+              <span class="error-arrow">
+                →
+              </span>
+
+              <span class="error-right">
+                "${e.correct_form}"
+              </span>
+
+            </div>
+
+            <div class="error-cat">
+              ${e.category}
+            </div>
+
+            ${
+              e.explanation
+                ? `
+                  <div
+                    style="
+                      font-size:12px;
+                      color:var(--text-muted);
+                      margin-top:3px
+                    "
+                  >
+                    ${e.explanation}
+                  </div>
+                `
+                : ''
+            }
+
+          </div>
+
+        </div>
+
+      `).join('')}
+    `;
+
   } catch {
-    list.innerHTML = '<div class="empty-errors">Could not load errors. Is the backend running?</div>';
+
+    list.innerHTML =
+      '<div class="empty-errors">Could not load errors. Is the backend running?</div>';
+
   }
+
 }
 
-// ═══════════════════════════════════════════════
-//  Progress page
-// ═══════════════════════════════════════════════
-async function loadProgress() {
-  try {
-    const res  = await fetch(`${API}/api/profile`);
-    const data = await res.json();
-    document.getElementById('statSessions').textContent  = data.total_sessions  ?? '—';
-    document.getElementById('statMessages').textContent  = data.total_messages  ?? '—';
-    document.getElementById('statErrors').textContent    = data.total_error_types ?? '—';
-  } catch {
-    // Silently fail
-  }
-}
 
-// ═══════════════════════════════════════════════
-//  Voice — TTS (browser built-in)
-// ═══════════════════════════════════════════════
+/* ═══════════════════════════════════════════════
+   TTS
+═══════════════════════════════════════════════ */
+
 function speak(text) {
+
   if (!state.ttsEnabled) return;
+
   if (!window.speechSynthesis) return;
 
   stopTTS();
 
-  // Strip correction markers for cleaner audio
   const clean = text
     .replace(/\[Error\]:.*?\n/gi, '')
     .replace(/\[Explicacion\]:.*?\n/gi, '')
@@ -1033,131 +2356,324 @@ function speak(text) {
 
   if (!clean) return;
 
-  const utt = new SpeechSynthesisUtterance(clean);
-  utt.lang  = 'en-US';
-  utt.rate  = 0.92;
+  const utt =
+    new SpeechSynthesisUtterance(clean);
+
+  utt.lang = 'en-US';
+
+  utt.rate = 0.92;
+
   utt.pitch = 1.0;
 
-  // Prefer a natural English voice if available
-  const voices = window.speechSynthesis.getVoices();
-  const preferred = voices.find(v =>
-    v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha'))
-  ) || voices.find(v => v.lang.startsWith('en'));
-  if (preferred) utt.voice = preferred;
+  const voices =
+    window.speechSynthesis.getVoices();
 
-  state.currentUtterance = utt;
-  window.speechSynthesis.speak(utt);
-}
+  const preferred =
+    voices.find(v =>
+      v.lang.startsWith('en') &&
+      (
+        v.name.includes('Natural') ||
+        v.name.includes('Google') ||
+        v.name.includes('Samantha')
+      )
+    ) ||
+    voices.find(v =>
+      v.lang.startsWith('en')
+    );
 
-function stopTTS() {
-  if (window.speechSynthesis) window.speechSynthesis.cancel();
-}
-
-function toggleVoice() {
-  state.ttsEnabled = !state.ttsEnabled;
-  const btn = document.getElementById('btnVoice');
-  btn.classList.toggle('active', state.ttsEnabled);
-  btn.title = state.ttsEnabled ? 'Voice on' : 'Voice off';
-  if (!state.ttsEnabled) stopTTS();
-  document.getElementById('settingTTS').checked = state.ttsEnabled;
-}
-
-// ═══════════════════════════════════════════════
-//  Voice — STT (Web Speech API)
-// ═══════════════════════════════════════════════
-function initSpeechRecognition() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    document.getElementById('btnMic').title = 'Speech recognition not available in this browser';
-    return;
+  if (preferred) {
+    utt.voice = preferred;
   }
 
-  const rec = new SpeechRecognition();
+  state.currentUtterance = utt;
+
+  window.speechSynthesis.speak(utt);
+
+}
+
+
+function stopTTS() {
+
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+  }
+
+}
+
+
+function toggleVoice() {
+
+  state.ttsEnabled =
+    !state.ttsEnabled;
+
+  const btn =
+    document.getElementById('btnVoice');
+
+  btn.classList.toggle(
+    'active',
+    state.ttsEnabled
+  );
+
+  btn.title =
+    state.ttsEnabled
+      ? 'Voice on'
+      : 'Voice off';
+
+  if (!state.ttsEnabled) {
+    stopTTS();
+  }
+
+  document.getElementById(
+    'settingTTS'
+  ).checked =
+    state.ttsEnabled;
+
+}
+
+
+/* ═══════════════════════════════════════════════
+   Speech Recognition
+═══════════════════════════════════════════════ */
+
+function initSpeechRecognition() {
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+
+    document.getElementById(
+      'btnMic'
+    ).title =
+      'Speech recognition not available in this browser';
+
+    return;
+
+  }
+
+  const rec =
+    new SpeechRecognition();
+
   rec.lang = 'en-US';
+
   rec.continuous = false;
+
   rec.interimResults = true;
 
   rec.onstart = () => {
+
     state.isRecording = true;
-    document.getElementById('btnMic').classList.add('recording');
-    document.getElementById('transcriptPreview').textContent = 'Listening…';
-    document.getElementById('transcriptPreview').className = 'transcript-preview listening';
+
+    document
+      .getElementById('btnMic')
+      .classList.add('recording');
+
+    document
+      .getElementById('transcriptPreview')
+      .textContent =
+      'Listening…';
+
+    document
+      .getElementById('transcriptPreview')
+      .className =
+      'transcript-preview listening';
+
     stopTTS();
+
   };
+
 
   rec.onresult = (event) => {
+
     let interim = '';
-    let final   = '';
-    for (const r of event.results) {
-      if (r.isFinal) final   += r[0].transcript;
-      else           interim += r[0].transcript;
+
+    let final = '';
+
+    for (
+      const r of event.results
+    ) {
+
+      if (r.isFinal) {
+        final += r[0].transcript;
+      } else {
+        interim += r[0].transcript;
+      }
+
     }
-    const preview = document.getElementById('transcriptPreview');
-    preview.textContent = final || interim || 'Listening…';
+
+    const preview =
+      document.getElementById(
+        'transcriptPreview'
+      );
+
+    preview.textContent =
+      final ||
+      interim ||
+      'Listening…';
 
     if (final) {
-      document.getElementById('textInput').value = final.trim();
-      autoResize(document.getElementById('textInput'));
+
+      document.getElementById(
+        'textInput'
+      ).value =
+        final.trim();
+
+      autoResize(
+        document.getElementById(
+          'textInput'
+        )
+      );
+
     }
+
   };
+
 
   rec.onerror = (e) => {
-    const preview = document.getElementById('transcriptPreview');
-    if (e.error === 'not-allowed') {
-      preview.textContent = 'Microphone permission denied.';
-    } else if (e.error === 'no-speech') {
-      preview.textContent = 'No speech detected. Try again.';
+
+    const preview =
+      document.getElementById(
+        'transcriptPreview'
+      );
+
+    if (
+      e.error === 'not-allowed'
+    ) {
+
+      preview.textContent =
+        'Microphone permission denied.';
+
+    } else if (
+      e.error === 'no-speech'
+    ) {
+
+      preview.textContent =
+        'No speech detected. Try again.';
+
     } else {
+
       preview.textContent = '';
+
     }
+
     stopRecording();
+
   };
 
+
   rec.onend = () => {
+
     stopRecording();
-    const text = document.getElementById('textInput').value.trim();
+
+    const text =
+      document.getElementById(
+        'textInput'
+      ).value.trim();
+
     if (text) {
-      setTimeout(() => sendMessage(), 300);
+
+      setTimeout(
+        () => sendMessage(),
+        300
+      );
+
     }
+
     setTimeout(() => {
-      document.getElementById('transcriptPreview').textContent = '';
-      document.getElementById('transcriptPreview').className = 'transcript-preview';
+
+      document
+        .getElementById(
+          'transcriptPreview'
+        )
+        .textContent = '';
+
+      document
+        .getElementById(
+          'transcriptPreview'
+        )
+        .className =
+        'transcript-preview';
+
     }, 1500);
+
   };
 
   state.recognition = rec;
+
 }
+
 
 function toggleMic() {
+
   if (!state.recognition) {
-    showAlert('Speech recognition is not supported in this browser. Use Chrome or Edge.');
+
+    showAlert(
+      'Speech recognition is not supported in this browser. Use Chrome or Edge.'
+    );
+
     return;
+
   }
+
   if (state.isRecording) {
+
     state.recognition.stop();
+
   } else {
+
     state.recognition.start();
+
   }
+
 }
+
 
 function stopRecording() {
+
   state.isRecording = false;
-  document.getElementById('btnMic').classList.remove('recording');
+
+  document
+    .getElementById('btnMic')
+    .classList.remove('recording');
+
 }
 
-// ═══════════════════════════════════════════════
-//  Alerts
-// ═══════════════════════════════════════════════
+
+/* ═══════════════════════════════════════════════
+   Alerts
+═══════════════════════════════════════════════ */
+
 function showAlert(msg) {
-  const el = document.getElementById('alertBanner');
+
+  const el =
+    document.getElementById(
+      'alertBanner'
+    );
+
   el.textContent = msg;
+
   el.classList.add('visible');
-  setTimeout(() => hideAlert(), 8000);
+
+  setTimeout(
+    () => hideAlert(),
+    8000
+  );
+
 }
+
 
 function hideAlert() {
-  document.getElementById('alertBanner').classList.remove('visible');
+
+  document
+    .getElementById(
+      'alertBanner'
+    )
+    .classList.remove('visible');
+
 }
+
 </script>
+
 </body>
 </html>
